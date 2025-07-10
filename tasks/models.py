@@ -23,7 +23,7 @@ class Task(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    flag = models.CharField(max_length=1, choices=FLAG_CHOICES)
+    flag = models.CharField(max_length=6, choices=FLAG_CHOICES)
     category = models.ForeignKey(Category, related_name='tasks', on_delete=models.CASCADE, blank=True, null=True)
     is_complete = models.BooleanField(default=False)
 
