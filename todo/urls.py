@@ -21,6 +21,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tasks/', include('tasks.urls')),
+    path('accounts/', include('accounts.urls')),
 
     #JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
