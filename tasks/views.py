@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Task, Category
 from .serializers import TaskSerializer, CategorySerializer
 from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class TasksApiView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -10,7 +11,8 @@ class TasksApiView(ListCreateAPIView):
     search_fields = ['title', 'description']
     ordering_fields = ['start_date', 'end_date', 'title']
     ordering = ['-start_date', '-end_date']
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend ,SearchFilter, OrderingFilter]
+    filterset_fields = ['is_complete', 'flag', 'category']
 
 
     def get_queryset(self):
