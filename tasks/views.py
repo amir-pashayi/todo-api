@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Task, Category
 from .serializers import TaskSerializer, CategorySerializer
@@ -19,3 +19,17 @@ class TasksApiView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class TaskDetailApiView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        queryset = Task.objects.filter(user=self.request.user)
+        return queryset
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+
