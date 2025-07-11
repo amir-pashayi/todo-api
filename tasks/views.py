@@ -33,3 +33,13 @@ class TaskDetailApiView(RetrieveUpdateDestroyAPIView):
         serializer.save(user=self.request.user)
 
 
+class CategoryApiView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        queryset = Category.objects.filter(user=self.request.user)
+        return queryset
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
