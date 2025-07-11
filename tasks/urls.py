@@ -8,4 +8,5 @@ urlpatterns = [
 
     # Categories
     path('categories/', views.CategoryApiView.as_view(), name='categories-list'),
+    path('categories/<int:id>', views.CategoryDetailApiView.as_view(), name='categories-detail'),
 ]

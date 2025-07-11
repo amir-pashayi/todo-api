@@ -43,3 +43,15 @@ class CategoryApiView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
+
+
+class CategoryDetailApiView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CategorySerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        queryset = Category.objects.filter(user=self.request.user)
+        return queryset
+    def perform_update(self, serializer):
+        return serializer.save(user=self.request.user)
