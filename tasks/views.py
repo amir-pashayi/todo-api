@@ -1,9 +1,13 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Task, Category
 from .serializers import TaskSerializer, CategorySerializer
 from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 class TasksApiView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -57,3 +61,13 @@ class CategoryDetailApiView(RetrieveUpdateDestroyAPIView):
         return queryset
     def perform_update(self, serializer):
         return serializer.save(user=self.request.user)
+
+
+class TaskDoneApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, id):
+        task = get_object_or_404(Task, pk=id)
+        task.is_complete = True
+        task.save()
+        return Response({'detail': 'Task marked as done'}, status=status.HTTP_200_OK)
