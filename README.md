@@ -105,5 +105,4 @@ It follows best practices in:
 
 ## 👤 Author
 
-Created by **Amir Pashayi**  
-[GitHub: amirp-ashayi](https://github.com/amir-pashayi)
+Developed with ❤️ by [Amir Pashayi](https://github.com/amir-pashayi)
