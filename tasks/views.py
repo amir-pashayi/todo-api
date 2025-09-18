@@ -1,4 +1,5 @@
 from rest_framework import status
+from django.http import HttpResponse
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Task, Category
@@ -11,6 +12,8 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta
+import csv
+
 
 class TasksApiView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -146,3 +149,43 @@ class TaskBulkDeleteApiView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class TaskCSVExportApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        qs = Task.objects.filter(user=request.user).order_by('end_date', 'title')
+
+        due = request.query_params.get("due")
+        if due in {"today", "overdue", "week"}:
+            today = timezone.now().date()
+            filters = {
+                "today": {"end_date": today, "is_complete": False},
+                "overdue": {"end_date__lt": today, "is_complete": False},
+                "week": {
+                    "end_date__gte": today,
+                    "end_date__lte": today + timedelta(days=7),
+                    "is_complete": False,
+                },
+            }
+            qs = qs.filter(**filters[due])
+
+        resp = HttpResponse(content_type='text/csv; charset=utf-8')
+        resp['Content-Disposition'] = 'attachment; filename="tasks.csv"'
+
+        writer = csv.writer(resp)
+        writer.writerow(['id', 'title', 'description', 'end_date', 'is_complete', 'flag', 'category_id'])
+
+        for t in qs:
+            writer.writerow([
+                t.id,
+                t.title or '',
+                (t.description or '').replace('\r\n', '\n'),
+                t.end_date.isoformat() if getattr(t, 'end_date', None) else '',
+                'true' if getattr(t, 'is_complete', False) else 'false',
+                t.flag if hasattr(t, 'flag') else '',
+                getattr(getattr(t, 'category', None), 'id', ''),
+            ])
+
+        return resp

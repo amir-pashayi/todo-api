@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:id>/done/', views.TaskDoneApiView.as_view(), name='task-done'),
     path('bulk/done/', views.TaskBulkDoneApiView.as_view(), name='tasks-bulk-done'),
     path('bulk/delete/', views.TaskBulkDeleteApiView.as_view(), name='tasks-bulk-delete'),
+    path('export.csv', views.TaskCSVExportApiView.as_view(), name='tasks-export-csv'),
 ]
