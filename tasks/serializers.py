@@ -34,3 +34,14 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Task.objects.create(user=self.context['request'].user, **validated_data)
+
+
+class IdsPayloadSerializer(serializers.Serializer):
+    ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1),
+        allow_empty=False,
+        help_text="List of Task IDs"
+    )
+
+    def validate_ids(self, value):
+        return list(dict.fromkeys(value))[:500]
