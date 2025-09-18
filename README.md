@@ -1,108 +1,78 @@
 # 📝 Todo API
 
-A simple Todo API built with Django REST Framework.  
-It supports JWT-based authentication and basic features like filtering, searching, full API documentation via Swagger and Redoc.
+A simple **Task Management REST API** built with **Django + DRF**.  
+Supports authentication, categories, filters, bulk actions, and CSV export.  
 
 ---
 
 ## 🚀 Features
-
-- JWT authentication (Login & Register)
-- Create / update / delete personal tasks
-- Task categories per user
-- Filtering, searching, and ordering tasks
-- API documentation with Swagger and Redoc
+- **User Accounts & JWT Authentication** (register, login, profile)
+- **Tasks & Categories CRUD**
+- **Mark tasks as done** (idempotent)
+- **Smart filters** → `?due=today | overdue | week`
+- **Bulk actions** → done & delete multiple tasks in one request
+- **CSV export** → `GET /api/tasks/export.csv`
+- **Browsable API Docs** (Swagger & Redoc)
 
 ---
 
-## 🛠 Tech Stack
-
-- Python
-- Django
-- Django REST Framework
-- Simple JWT (authentication)
-- Django Filter
+## ⚙️ Tech Stack
+- Django + Django REST Framework
+- JWT (djangorestframework-simplejwt)
 - drf-spectacular (Swagger / Redoc)
+- django-filter (search & filtering)
 
 ---
 
-## 📦 Installation
+## 📡 API Endpoints (highlights)
 
-```bash
-git clone https://github.com/amir-pashayi/todo-api.git
-cd todo-api
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-```
+**Auth**
+- `POST /api/accounts/register/` → create user  
+- `POST /api/accounts/token/` → get access/refresh tokens  
+- `GET /api/accounts/me/` → current user profile  
 
----
+**Tasks**
+- `GET /api/tasks/` → list tasks (supports filters & ordering)  
+- `POST /api/tasks/` → create task  
+- `GET /api/tasks/{id}/` → retrieve task  
+- `PATCH /api/tasks/{id}/done/` → mark task as done  
+- `POST /api/tasks/bulk/done/` → mark multiple tasks done  
+- `POST /api/tasks/bulk/delete/` → delete multiple tasks  
+- `GET /api/tasks/export.csv` → download tasks as CSV  
 
-## 📚 API Documentation
-
-- Swagger: http://127.0.0.1:8000/swagger/
-- Redoc: http://127.0.0.1:8000/redoc/
-
----
-
-## 🔐 Authentication (JWT)
-
-### Register
-`POST /api/accounts/register/`
-
-### Login
-`POST /api/accounts/token/`
-
-Example request body:
-```json
-{
-  "username": "your_username",
-  "password": "your_password"
-}
-```
-
-Use the returned access token like:
-```
-Authorization: Bearer <access_token>
-```
+**Categories**
+- `GET /api/categories/` → list categories  
+- `POST /api/categories/` → create category  
 
 ---
 
-## ✅ Mark Task as Done
+## 🔑 Usage
 
-`PATCH /api/tasks/<id>/done/`  
-This endpoint sets the `is_done` field of a task to `true`.
+1. Clone & install requirements:
+   ```bash
+   git clone https://github.com/amir-pashayi/todo-api.git
+   cd todo-api
+   pip install -r requirements.txt
+   ```
 
----
+2. Run migrations & create superuser:
+   ```bash
+   python manage.py migrate
+   python manage.py createsuperuser
+   ```
 
-## 📁 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST   | /api/accounts/register/        | Register new user |
-| POST   | /api/accounts/token/           | Login & get tokens |
-| GET/POST | /api/tasks/                  | List / create tasks |
-| GET/PUT | /api/tasks/{id}/              | Retrieve / update task |
-| PATCH   | /api/tasks/{id}/done/         | Mark task as done |
-| GET/POST | /api/categories/             | List / create categories |
-| GET/PUT/DELETE | /api/categories/{id}/  | Retrieve / update / delete category |
-
----
-
-## 👨‍💻 Developer Notes
-
-This project is built as a personal portfolio API to demonstrate real-world backend skills.  
-It follows best practices in:
-
-- Authentication & Permissions
-- Filtering & Searching
-- Clean code structure
-- API documentation
+3. Start development server:
+   ```bash
+   python manage.py runserver
+   ```
 
 ---
 
-## 👤 Author
+## 📖 API Docs
+- Swagger UI → [http://localhost:8000/api/schema/swagger-ui/](http://localhost:8000/api/schema/swagger-ui/)  
+- Redoc → [http://localhost:8000/api/schema/redoc/](http://localhost:8000/api/schema/redoc/)  
 
-Developed with ❤️ by [Amir Pashayi](https://github.com/amir-pashayi)
+---
+
+## ✨ Author
+Built with ❤️ by [amir-pashayi](https://github.com/amir-pashayi)
