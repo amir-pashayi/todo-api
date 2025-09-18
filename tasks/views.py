@@ -67,7 +67,9 @@ class TaskDoneApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, id):
-        task = get_object_or_404(Task, pk=id)
+        task = get_object_or_404(Task, pk=id, user=request.user)
+        if task.is_complete:
+            return Response({'detail': 'already done'}, status=status.HTTP_200_OK)
         task.is_complete = True
-        task.save()
+        task.save(update_fields=['is_complete'])
         return Response({'detail': 'Task marked as done'}, status=status.HTTP_200_OK)
