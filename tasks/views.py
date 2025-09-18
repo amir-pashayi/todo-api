@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.utils import timezone
+from datetime import timedelta
 
 class TasksApiView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -20,10 +21,23 @@ class TasksApiView(ListCreateAPIView):
     filter_backends = [DjangoFilterBackend ,SearchFilter, OrderingFilter]
     filterset_fields = ['is_complete', 'flag', 'category']
 
-
     def get_queryset(self):
-        queryset = Task.objects.filter(user=self.request.user)
-        return queryset
+        qs = Task.objects.filter(user=self.request.user)
+
+        due = self.request.query_params.get("due")
+        if due:
+            today = timezone.now().date()
+            if due == "today":
+                qs = qs.filter(end_date=today, is_complete=False)
+            elif due == "overdue":
+                qs = qs.filter(end_date__lt=today, is_complete=False)
+            elif due == "week":
+                qs = qs.filter(
+                    end_date__gte=today,
+                    end_date__lte=today + timedelta(days=7),
+                    is_complete=False,
+                )
+        return qs
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
