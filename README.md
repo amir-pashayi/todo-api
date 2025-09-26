@@ -75,4 +75,4 @@ Supports authentication, categories, filters, bulk actions, and CSV export.
 ---
 
 ## ✨ Author
-Built with ❤️ by [amir-pashayi](https://github.com/amir-pashayi)
+Developed with ❤️ and ☕ by **Amir Pashayi**
